@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../api/axios";
-// import ScholarshipCard from "../common/ScholarshipCard";
+import ScholarshipCard from "../common/ScholarshipCard";
 import { Link } from "react-router-dom";
 
 const TopScholarships = () => {
