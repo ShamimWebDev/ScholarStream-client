@@ -82,6 +82,28 @@ const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Fetch user data from backend
+   * @param {string} email - User email
+   */
+  const fetchUserData = (email) => {
+    axios
+      .get(`/users/${email}`, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+      .then((userRes) => {
+        // Merge Firebase user with database user (includes role)
+        setUser((prev) => ({ ...prev, ...userRes.data }));
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("User fetch failed", err);
+        setLoading(false);
+      });
+  };
+
+  /**
    * Firebase auth state observer
    * Runs on mount and whenever auth state changes
    * Fetches JWT from backend and merges user role from database
@@ -98,22 +120,7 @@ const AuthProvider = ({ children }) => {
           .then((res) => {
             if (res.data.token) {
               localStorage.setItem("access-token", res.data.token);
-
-              // Fetch full user profile including role from database
-              axios
-                .get(`/users/${currentUser.email}`, {
-                  headers: { authorization: `Bearer ${res.data.token}` },
-                })
-                .then((userRes) => {
-                  // Merge Firebase user with database user (includes role)
-                  setUser({ ...currentUser, ...userRes.data });
-                  setLoading(false);
-                })
-                .catch((err) => {
-                  console.error("User fetch failed", err);
-                  setUser(currentUser); // Fallback to Firebase user only
-                  setLoading(false);
-                });
+              fetchUserData(currentUser.email);
             }
           })
           .catch((err) => {
@@ -140,6 +147,7 @@ const AuthProvider = ({ children }) => {
     googleSignIn,
     logout,
     updateUserProfile,
+    fetchUserData,
   };
 
   return (

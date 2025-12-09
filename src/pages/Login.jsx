@@ -4,7 +4,8 @@ import { AuthContext } from "../context/AuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-  const { signIn, googleSignIn } = useContext(AuthContext);
+  // We need fetchUserData from context
+  const { signIn, googleSignIn, fetchUserData } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
@@ -29,8 +30,20 @@ const Login = () => {
 
   const handleGoogleSignIn = () => {
     googleSignIn()
-      .then(() => {
-        navigate(from, { replace: true });
+      .then((result) => {
+        const user = result.user;
+        const userInfo = {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          role: "student",
+        };
+        axios.post("/users", userInfo).then((res) => {
+          console.log(res.data);
+          // Manually fetch user data to ensure role is present
+          fetchUserData(user.email);
+          navigate(from, { replace: true });
+        });
       })
       .catch((err) => {
         setError(err.message);

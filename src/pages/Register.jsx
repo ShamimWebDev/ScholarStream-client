@@ -5,7 +5,7 @@ import axios from "../api/axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
-  const { createUser, updateUserProfile, googleSignIn } =
+  const { createUser, updateUserProfile, googleSignIn, fetchUserData } =
     useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +47,7 @@ const Register = () => {
           axios
             .post("/users", userInfo)
             .then(() => {
+              fetchUserData(email);
               navigate("/");
             })
             .catch((err) => console.error(err));
@@ -70,6 +71,7 @@ const Register = () => {
         axios
           .post("/users", userInfo)
           .then(() => {
+            fetchUserData(user.email);
             navigate("/");
           })
           .catch((err) => console.error(err));
@@ -149,15 +151,14 @@ const Register = () => {
                 placeholder="Create a strong password"
                 required
               />
-           
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 z-10"
-                >
-                 {showPassword ? <FaEye /> : <FaEyeSlash />}
-                </button>
-              
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 z-10"
+              >
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </button>
             </div>
             <label className="label">
               <span className="label-text-alt text-gray-500">
