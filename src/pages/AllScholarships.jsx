@@ -1,5 +1,5 @@
 /**
- * All Scholarships Page
+ * All Scholarships Page  
  *
  * Displays paginated list of scholarships with search, filter, and sort capabilities.
  * Fetches data from backend API with query parameters for dynamic filtering.
