@@ -87,18 +87,26 @@ const AuthProvider = ({ children }) => {
    */
   const fetchUserData = (email) => {
     axios
-      .get(`/users/${email}`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("access-token")}`,
-        },
-      })
+      .get(`/users/${email}`)
       .then((userRes) => {
-        // Merge Firebase user with database user (includes role)
-        setUser((prev) => ({ ...prev, ...userRes.data }));
+        console.log("🔍 AuthContext - MongoDB user data:", userRes.data);
+
+        // Merge Firebase user with database user (includes role and _id)
+        setUser((prev) => {
+          const merged = { ...prev, ...userRes.data };
+          console.log("✅ AuthContext - Merged user:", {
+            email: merged.email,
+            _id: merged._id,
+            role: merged.role,
+            displayName: merged.displayName || merged.name,
+          });
+          return merged;
+        });
         setLoading(false);
       })
       .catch((err) => {
-        console.error("User fetch failed", err);
+        console.error("❌ User fetch failed", err);
+        console.error("❌ User might not exist in MongoDB for:", email);
         setLoading(false);
       });
   };
@@ -110,6 +118,7 @@ const AuthProvider = ({ children }) => {
    */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("🔍 AuthContext - Firebase user:", currentUser?.email);
       setUser(currentUser);
 
       if (currentUser) {
@@ -119,17 +128,18 @@ const AuthProvider = ({ children }) => {
           .post("/jwt", userInfo)
           .then((res) => {
             if (res.data.token) {
-              localStorage.setItem("access-token", res.data.token);
+              console.log("✅ JWT token obtained");
+              localStorage.setItem("token", res.data.token);
               fetchUserData(currentUser.email);
             }
           })
           .catch((err) => {
-            console.error("JWT fetch failed", err);
+            console.error("❌ JWT fetch failed", err);
             setLoading(false);
           });
       } else {
         // User logged out - clear token
-        localStorage.removeItem("access-token");
+        localStorage.removeItem("token");
         setLoading(false);
       }
     });

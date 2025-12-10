@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 
 const ScholarshipDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
   const [scholarship, setScholarship] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasApplied, setHasApplied] = useState(false);
+  const [existingApp, setExistingApp] = useState(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -16,8 +20,20 @@ const ScholarshipDetails = () => {
         setScholarship(scholarshipRes.data);
 
         // Fetch reviews roughly concurrently or after
-        const reviewsRes = await axios.get(`/reviews/${id}`);
+        const reviewsRes = await axios.get(`/reviews/scholarship/${id}`);
         setReviews(reviewsRes.data);
+
+        // Check if user has already applied for this scholarship
+        if (user?.email) {
+          const appsRes = await axios.get(`/applications/user/${user.email}`);
+          const existingApplication = appsRes.data.find(
+            (app) => app.scholarshipId === id
+          );
+          if (existingApplication) {
+            setHasApplied(true);
+            setExistingApp(existingApplication);
+          }
+        }
 
         setLoading(false);
       } catch (error) {
@@ -100,12 +116,51 @@ const ScholarshipDetails = () => {
           </div>
 
           <div className="flex gap-4 mt-6">
-            <Link
-              to={`/checkout/${id}`}
-              className="btn btn-primary btn-lg flex-grow"
-            >
-              Apply for Scholarship
-            </Link>
+            {hasApplied ? (
+              <div className="w-full">
+                <div className="alert alert-info">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="stroke-current shrink-0 w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <div>
+                    <h3 className="font-bold">Already Applied</h3>
+                    <div className="text-sm">
+                      You have already submitted an application for this
+                      scholarship.
+                      <br />
+                      <span className="font-semibold">Status:</span>{" "}
+                      {existingApp?.applicationStatus}
+                      {" | "}
+                      <span className="font-semibold">Payment:</span>{" "}
+                      {existingApp?.paymentStatus}
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  to="/dashboard/my-applications"
+                  className="btn btn-outline btn-primary btn-lg w-full mt-4"
+                >
+                  View My Applications
+                </Link>
+              </div>
+            ) : (
+              <Link
+                to={`/checkout/${id}`}
+                className="btn btn-primary btn-lg flex-grow"
+              >
+                Apply for Scholarship
+              </Link>
+            )}
           </div>
         </div>
       </div>

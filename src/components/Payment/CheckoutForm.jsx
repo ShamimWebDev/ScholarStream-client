@@ -26,6 +26,7 @@ const CheckoutForm = ({ scholarship }) => {
 
   const {
     applicationFees,
+    serviceCharge,
     scholarshipName,
     universityName,
     subjectCategory,
@@ -41,20 +42,23 @@ const CheckoutForm = ({ scholarship }) => {
   useEffect(() => {
     if (applicationFees > 0) {
       axios
-        .post(
-          "/payment/create-payment-intent",
-          { price: applicationFees },
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("access-token")}`,
-            },
-          }
-        )
+        .post("/payments/create-payment-intent", { price: applicationFees })
         .then((res) => {
           setClientSecret(res.data.clientSecret);
         });
     }
   }, [applicationFees]);
+
+  // Debug: Log user data when component mounts or user changes
+  useEffect(() => {
+    console.log("🔍 CheckoutForm - User data:", {
+      hasId: !!user?._id,
+      userId: user?._id,
+      email: user?.email,
+      name: user?.displayName,
+      fullUser: user,
+    });
+  }, [user]);
 
   /**
    * Handle payment form submission
@@ -101,34 +105,117 @@ const CheckoutForm = ({ scholarship }) => {
 
     if (confirmError) {
       setError(confirmError.message);
+
+      // Save application with unpaid status on payment failure
+      const failedApplication = {
+        scholarshipId: _id,
+        userId: user._id, // MongoDB ObjectId from backend user data
+        scholarshipName: scholarshipName,
+        universityName: universityName,
+        subjectCategory: subjectCategory,
+        scholarshipCategory: scholarshipCategory,
+        degree: degree,
+        userEmail: user.email,
+        userName: user.displayName,
+        applicationFees: applicationFees,
+        serviceCharge: scholarship.serviceCharge || 0,
+        applicationDate: new Date(),
+        paymentStatus: "unpaid",
+        applicationStatus: "pending",
+      };
+
+      try {
+        await axios.post("/applications", failedApplication);
+        navigate("/payment-failed");
+      } catch (err) {
+        console.error("Failed to save application:", err);
+      }
     } else {
       if (paymentIntent.status === "succeeded") {
         setTransactionId(paymentIntent.id);
 
-        // Save application to database after successful payment
-        const application = {
-          scholarshipId: _id,
-          scholarshipName: scholarshipName,
-          universityName: universityName,
-          subjectCategory: subjectCategory,
-          scholarshipCategory: scholarshipCategory,
-          degree: degree,
-          userEmail: user.email,
-          userName: user.displayName,
-          applicationDate: new Date(),
-          transactionId: paymentIntent.id,
-          price: applicationFees,
-          status: "pending",
-        };
+        // Check if an unpaid application already exists for this user and scholarship
+        try {
+          const existingAppsRes = await axios.get(
+            `/applications/user/${user.email}`
+          );
+          const existingApp = existingAppsRes.data.find(
+            (app) => app.scholarshipId === _id && app.paymentStatus === "unpaid"
+          );
 
-        const res = await axios.post("/applications", application, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("access-token")}`,
-          },
-        });
+          if (existingApp) {
+            // Update existing unpaid application
+            console.log(
+              "📝 Updating existing unpaid application:",
+              existingApp._id
+            );
 
-        if (res.data.insertedId || res.data._id) {
-          navigate("/payment-success");
+            const updateData = {
+              paymentStatus: "paid",
+              applicationDate: new Date(), // Update to current date
+            };
+
+            const res = await axios.patch(
+              `/applications/${existingApp._id}`,
+              updateData
+            );
+            console.log("✅ Application updated successfully:", res.data);
+
+            navigate("/payment-success", {
+              state: {
+                transactionId: paymentIntent.id,
+                amount: applicationFees,
+                scholarshipName,
+                universityName,
+              },
+            });
+          } else {
+            // No existing unpaid application, create new one
+            const application = {
+              scholarshipId: _id,
+              userId: user._id,
+              scholarshipName: scholarshipName,
+              universityName: universityName,
+              subjectCategory: subjectCategory,
+              scholarshipCategory: scholarshipCategory,
+              degree: degree,
+              userEmail: user.email,
+              userName: user.displayName,
+              applicationFees: applicationFees,
+              serviceCharge: scholarship.serviceCharge || 0,
+              applicationDate: new Date(),
+              paymentStatus: "paid",
+              applicationStatus: "pending",
+            };
+
+            console.log("📤 Creating new application:", application);
+            const res = await axios.post("/applications", application);
+            console.log("✅ Application saved successfully:", res.data);
+
+            if (res.data._id || res.data.insertedId) {
+              navigate("/payment-success", {
+                state: {
+                  transactionId: paymentIntent.id,
+                  amount: applicationFees,
+                  scholarshipName,
+                  universityName,
+                },
+              });
+            }
+          }
+        } catch (err) {
+          console.error("❌ Failed to save application:", err);
+          console.error("❌ Error response data:", err.response?.data);
+          console.error("❌ Error status:", err.response?.status);
+          console.error("❌ Error message:", err.message);
+
+          const errorMessage =
+            err.response?.data?.message ||
+            err.response?.data?.error ||
+            err.message;
+          setError(
+            `Payment succeeded but failed to save application: ${errorMessage}`
+          );
         }
       }
     }

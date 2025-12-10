@@ -20,11 +20,7 @@ const Analytics = () => {
 
   useEffect(() => {
     axios
-      .get("/admin/stats", {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("access-token")}`,
-        },
-      })
+      .get("/analytics/stats")
       .then((res) => {
         setStats(res.data);
         setLoading(false);
@@ -84,13 +80,15 @@ const Analytics = () => {
           </div>
         </div>
         <div className="stat bg-base-200 rounded-lg shadow">
-          <div className="stat-title">Total Reviews</div>
-          <div className="stat-value">{stats.totals.reviews}</div>
+          <div className="stat-title">Total Fees Collected</div>
+          <div className="stat-value text-success">
+            ${stats.totals.totalFeesCollected || 0}
+          </div>
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      {/* Charts Row 1 */}
+      <div className="flex flex-col lg:flex-row gap-6 mb-6">
         {/* Applications by Category */}
         <div className="w-full lg:w-1/2 bg-base-200 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-4 text-center">
@@ -145,25 +143,54 @@ const Analytics = () => {
         </div>
       </div>
 
-      {/* Applications by Status */}
-      <div className="mt-6 bg-base-200 p-4 rounded-lg shadow">
-        <h3 className="text-xl font-bold mb-4 text-center">
-          Applications by Status
-        </h3>
-        {stats.applicationsByStatus.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={stats.applicationsByStatus}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-center">No status data available</p>
-        )}
+      {/* Charts Row 2 */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Applications by Status */}
+        <div className="w-full lg:w-1/2 bg-base-200 p-4 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-4 text-center">
+            Applications by Status
+          </h3>
+          {stats.applicationsByStatus.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={stats.applicationsByStatus}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center">No status data available</p>
+          )}
+        </div>
+
+        {/* Applications by University */}
+        <div className="w-full lg:w-1/2 bg-base-200 p-4 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-4 text-center">
+            Top 10 Universities by Applications
+          </h3>
+          {stats.applicationsByUniversity?.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={stats.applicationsByUniversity}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="name"
+                  angle={-45}
+                  textAnchor="end"
+                  height={100}
+                />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#ff7300" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center">No university data available</p>
+          )}
+        </div>
       </div>
     </div>
   );

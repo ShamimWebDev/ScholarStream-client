@@ -11,11 +11,7 @@ const ManageUsers = () => {
   const fetchUsers = () => {
     setLoading(true);
     axios
-      .get("/users", {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("access-token")}`,
-        },
-      })
+      .get("/users")
       .then((res) => {
         setUsers(res.data);
         setFilteredUsers(res.data);
@@ -41,52 +37,53 @@ const ManageUsers = () => {
 
   const handleMakeAdmin = (user) => {
     axios
-      .patch(
-        `/users/${user._id}/role`,
-        { role: "admin" },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("access-token")}`,
-          },
-        }
-      )
+      .patch(`/users/role/${user._id}`, { role: "admin" })
       .then((res) => {
         if (res.data) {
           alert(`${user.name} is an Admin now`);
           fetchUsers();
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error("Make admin failed:", err);
+        alert("Failed to make user admin");
+      });
   };
 
   const handleMakeModerator = (user) => {
     axios
-      .patch(
-        `/users/${user._id}/role`,
-        { role: "moderator" },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("access-token")}`,
-          },
-        }
-      )
+      .patch(`/users/role/${user._id}`, { role: "moderator" })
       .then((res) => {
         if (res.data) {
           alert(`${user.name} is a Moderator now`);
           fetchUsers();
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error("Make moderator failed:", err);
+        alert("Failed to make user moderator");
+      });
+  };
+
+  const handleMakeStudent = (user) => {
+    axios
+      .patch(`/users/role/${user._id}`, { role: "student" })
+      .then((res) => {
+        if (res.data) {
+          alert(`${user.name} is a Student now`);
+          fetchUsers();
+        }
+      })
+      .catch((err) => {
+        console.error("Make student failed:", err);
+        alert("Failed to make user student");
+      });
   };
 
   const handleDeleteUser = (user) => {
     if (window.confirm(`Delete ${user.name}?`)) {
       axios
-        .delete(`/users/${user._id}`, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("access-token")}`,
-          },
-        })
+        .delete(`/users/${user._id}`)
         .then((res) => {
           if (res.data) {
             alert("User deleted");
@@ -180,6 +177,14 @@ const ManageUsers = () => {
                         className="btn btn-xs btn-secondary"
                       >
                         Make Moderator
+                      </button>
+                    )}
+                    {user.role !== "student" && (
+                      <button
+                        onClick={() => handleMakeStudent(user)}
+                        className="btn btn-xs btn-accent"
+                      >
+                        Make Student
                       </button>
                     )}
                     <button

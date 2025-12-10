@@ -46,6 +46,43 @@ const Faq = () => {
             </p>
           </div>
         </div>
+        <div className="collapse collapse-arrow join-item border border-base-300">
+          <input type="radio" name="my-accordion-4" />
+          <div className="collapse-title text-xl font-medium">
+            What documents do I need to apply?
+          </div>
+          <div className="collapse-content">
+            <p>
+              Generally, you'll need your academic transcripts, a statement of
+              purpose, recommendation letters, and identification documents.
+              Specific requirements vary by scholarship.
+            </p>
+          </div>
+        </div>
+        <div className="collapse collapse-arrow join-item border border-base-300">
+          <input type="radio" name="my-accordion-4" />
+          <div className="collapse-title text-xl font-medium">
+            Can I apply for multiple scholarships?
+          </div>
+          <div className="collapse-content">
+            <p>
+              Yes! You can apply to as many scholarships as you are eligible
+              for. We encourage you to maximize your opportunities.
+            </p>
+          </div>
+        </div>
+        <div className="collapse collapse-arrow join-item border border-base-300">
+          <input type="radio" name="my-accordion-4" />
+          <div className="collapse-title text-xl font-medium">
+            How do I contact support?
+          </div>
+          <div className="collapse-content">
+            <p>
+              You can reach our support team 24/7 via the help chat button on
+              the bottom right or email us at support@scholarstream.com.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

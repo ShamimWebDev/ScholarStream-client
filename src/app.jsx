@@ -11,10 +11,13 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./layouts/DashboardLayout";
+import DashboardHome from "./pages/Dashboard/DashboardHome";
 import Profile from "./pages/Dashboard/Profile";
 import AddScholarship from "./pages/Dashboard/Admin/AddScholarship";
+import UpdateScholarship from "./pages/Dashboard/Admin/UpdateScholarship";
 import ManageUsers from "./pages/Dashboard/Admin/ManageUsers";
 import MyApplications from "./pages/Dashboard/Student/MyApplications";
+import EditApplication from "./pages/Dashboard/Student/EditApplication";
 import ManageApplications from "./pages/Dashboard/Moderator/ManageApplications";
 import ManageScholarships from "./pages/Dashboard/Admin/ManageScholarships";
 import Analytics from "./pages/Dashboard/Admin/Analytics";
@@ -84,6 +87,10 @@ function App() {
             <Route path="manage-users" element={<ManageUsers />} />
             <Route path="add-scholarship" element={<AddScholarship />} />
             <Route
+              path="update-scholarship/:id"
+              element={<UpdateScholarship />}
+            />
+            <Route
               path="manage-scholarships"
               element={<ManageScholarships />}
             />
@@ -96,10 +103,12 @@ function App() {
             <Route path="manage-reviews" element={<ManageReviews />} />
             {/* Student Routes */}
             <Route path="my-applications" element={<MyApplications />} />
+            <Route path="edit-application/:id" element={<EditApplication />} />
             <Route path="my-reviews" element={<MyReviews />} />
             {/* Common */}
             <Route path="profile" element={<Profile />} />
-            <Route index element={<Profile />} /> {/* Default to profile */}
+            <Route index element={<DashboardHome />} />{" "}
+            {/* Default dashboard */}
           </Route>
         </Routes>
       </Router>

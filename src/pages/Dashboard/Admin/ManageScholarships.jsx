@@ -7,7 +7,7 @@ const ManageScholarships = () => {
 
   const fetchScholarships = () => {
     axios
-      .get("/all-scholarships")
+      .get("/scholarships/all")
       .then((res) => setScholarships(res.data.scholarships))
       .catch((err) => console.error(err));
   };
@@ -19,11 +19,7 @@ const ManageScholarships = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this scholarship?")) {
       axios
-        .delete(`/scholarships/${id}`, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("access-token")}`,
-          },
-        })
+        .delete(`/scholarships/${id}`)
         .then((res) => {
           if (res.data._id || res.data) {
             alert("Deleted successfully");
@@ -60,8 +56,12 @@ const ManageScholarships = () => {
                 <td>{item.degree}</td>
                 <td>${item.applicationFees}</td>
                 <td className="flex gap-2">
-                  {/* Todo: Edit Link */}
-                  {/* <Link to={`/dashboard/update-scholarship/${item._id}`} className="btn btn-xs btn-info">Edit</Link> */}
+                  <Link
+                    to={`/dashboard/update-scholarship/${item._id}`}
+                    className="btn btn-xs btn-info"
+                  >
+                    Edit
+                  </Link>
                   <button
                     onClick={() => handleDelete(item._id)}
                     className="btn btn-xs btn-error"
