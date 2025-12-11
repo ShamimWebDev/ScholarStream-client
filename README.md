@@ -6,6 +6,28 @@ ScholarStream is a comprehensive web application designed to bridge the gap betw
 - **Github Repository (Client)**: [ScholarStream-client](https://github.com/ShamimWebDev/ScholarStream-client)
 - **Github Repository (Server)**: [ScholarStream-server](https://github.com/ShamimWebDev/ScholarStream-server)
 
+## Admin Role Credential
+=========
+user:admin1@gmail.com
+Pass: admin1@gmail.comA
+
+## Moderator Role Credential
+=======
+user: moderator@gmail.com
+Pass:Moderator@123
+
+## Student role Credential
+========
+user:student10@gmail.com
+Pass: student10@gmail.comA
+
+## 💳 Payment Testing Credential (Stripe Test Mode)
+To test the payment gateway functionality, usage the following test card credentials:
+
+| Card Number | Expiry Date | CVC | ZIP/Postal Code |
+| :--- | :--- | :--- | :--- |
+| **4242 4242 4242 4242** | Any future date (e.g., 12/30) | Any 3 digits (e.g., 123) | Any valid ZIP (e.g., 12345) |
+
 ## 🌟 Key Features
 
 ### 👨‍🎓 For Students
@@ -115,13 +137,6 @@ Run the backend:```bash
 npm start
 
 ```
-
-## 💳 Payment Testing Credential (Stripe Test Mode)
-To test the payment gateway functionality, usage the following test card credentials:
-
-| Card Number | Expiry Date | CVC | ZIP/Postal Code |
-| :--- | :--- | :--- | :--- |
-| **4242 4242 4242 4242** | Any future date (e.g., 12/30) | Any 3 digits (e.g., 123) | Any valid ZIP (e.g., 12345) |
 
 ## 📄 License
 This project is licensed under the MIT License.
