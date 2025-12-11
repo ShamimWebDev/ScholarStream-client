@@ -7,17 +7,17 @@ ScholarStream is a comprehensive web application designed to bridge the gap betw
 - **Github Repository (Server)**: [ScholarStream-server](https://github.com/ShamimWebDev/ScholarStream-server)
 
 ## Admin Role Credential
-=========
+
 user:admin1@gmail.com
 Pass: admin1@gmail.comA
 
 ## Moderator Role Credential
-=======
+
 user: moderator@gmail.com
 Pass:Moderator@123
 
 ## Student role Credential
-========
+
 user:student10@gmail.com
 Pass: student10@gmail.comA
 
