@@ -46,31 +46,58 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <>
-                <NavLink
-                  to="/dashboard"
-                  className="hover:text-blue-600 transition text-gray-700"
-                >
-                  Dashboard
-                </NavLink>
-                <button
-                  onClick={logout}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-                >
-                  Logout
+              <div className="relative group">
+                <button className="flex items-center space-x-2 focus:outline-none">
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full border border-gray-300 object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200">
+                      {user.displayName
+                        ? user.displayName.charAt(0).toUpperCase()
+                        : "U"}
+                    </div>
+                  )}
                 </button>
-              </>
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 border border-gray-100">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="text-sm font-semibold text-gray-800 truncate">
+                      {user.displayName || "User"}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
             ) : (
               <>
                 <NavLink
                   to="/login"
-                  className="text-gray-700 hover:text-blue-600 transition"
+                  className="text-gray-700 hover:text-blue-600 transition font-medium"
                 >
                   Login
                 </NavLink>
                 <NavLink
                   to="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition font-medium shadow-sm hover:shadow-md"
                 >
                   Register
                 </NavLink>

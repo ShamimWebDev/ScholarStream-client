@@ -1,14 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
+import {
+  FaUniversity,
+  FaGlobe,
+  FaMapMarkerAlt,
+  FaGraduationCap,
+  FaMoneyBillWave,
+  FaCalendarAlt,
+  FaBookOpen,
+  FaImage,
+} from "react-icons/fa";
 
 const AddScholarship = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const form = e.target;
     const scholarship = {
       scholarshipName: form.scholarshipName.value,
@@ -28,190 +40,278 @@ const AddScholarship = () => {
       scholarshipPostDate: new Date(),
     };
 
-    console.log("📤 Submitting scholarship:", scholarship);
-
     try {
       const res = await axios.post("/scholarships", scholarship);
-      console.log("✅ Scholarship added:", res.data);
       alert("Scholarship added successfully");
       navigate("/dashboard/manage-scholarships");
     } catch (error) {
-      console.error("❌ Failed to add scholarship:", error);
-      console.error("❌ Error response:", error.response?.data);
-      console.error("❌ Error status:", error.response?.status);
       const errorMsg = error.response?.data?.message || error.message;
       alert(`Failed to add scholarship: ${errorMsg}`);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const SectionHeader = ({ icon: Icon, title }) => (
+    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200 text-gray-700">
+      <Icon className="text-blue-600" />
+      <h3 className="text-lg font-semibold">{title}</h3>
+    </div>
+  );
+
   return (
-    <div className="w-full p-4">
-      <h2 className="text-3xl font-bold mb-6">Add Scholarship</h2>
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Scholarship Name</span>
-          </label>
-          <input
-            type="text"
-            name="scholarshipName"
-            placeholder="Scholarship Name"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">University Name</span>
-          </label>
-          <input
-            type="text"
-            name="universityName"
-            placeholder="University Name"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">University Image URL</span>
-          </label>
-          <input
-            type="text"
-            name="universityImage"
-            placeholder="Image URL"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Country</span>
-          </label>
-          <input
-            type="text"
-            name="universityCountry"
-            placeholder="Country"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">City</span>
-          </label>
-          <input
-            type="text"
-            name="universityCity"
-            placeholder="City"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">World Rank</span>
-          </label>
-          <input
-            type="number"
-            name="universityWorldRank"
-            placeholder="Rank"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Subject Category</span>
-          </label>
-          <select
-            name="subjectCategory"
-            className="select select-bordered"
-            required
-          >
-            <option value="Agriculture">Agriculture</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Doctor">Doctor</option>
-          </select>
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Scholarship Category</span>
-          </label>
-          <select
-            name="scholarshipCategory"
-            className="select select-bordered"
-            required
-          >
-            <option value="Full Fund">Full Fund</option>
-            <option value="Partial">Partial</option>
-            <option value="Self-fund">Self-fund</option>
-          </select>
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Degree</span>
-          </label>
-          <select name="degree" className="select select-bordered" required>
-            <option value="Diploma">Diploma</option>
-            <option value="Bachelor">Bachelor</option>
-            <option value="Masters">Masters</option>
-          </select>
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Tuition Fees (Optional)</span>
-          </label>
-          <input
-            type="number"
-            name="tuitionFees"
-            placeholder="Fees"
-            className="input input-bordered"
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Application Fees</span>
-          </label>
-          <input
-            type="number"
-            name="applicationFees"
-            placeholder="App Fees"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Service Charge</span>
-          </label>
-          <input
-            type="number"
-            name="serviceCharge"
-            placeholder="Service Charge"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Application Deadline</span>
-          </label>
-          <input
-            type="date"
-            name="applicationDeadline"
-            className="input input-bordered"
-            required
-          />
+    <div className="w-full max-w-4xl mx-auto p-4 lg:p-8">
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white text-center">
+          <h2 className="text-3xl font-bold mb-2">Create New Scholarship</h2>
+          <p className="opacity-90">
+            Publish a new opportunity for students worldwide
+          </p>
         </div>
 
-        <div className="form-control md:col-span-2 mt-6">
-          <button className="btn btn-primary">Add Scholarship</button>
-        </div>
-      </form>
+        <form onSubmit={handleSubmit} className="p-6 lg:p-8 space-y-8">
+          {/* General Information */}
+          <section>
+            <SectionHeader icon={FaBookOpen} title="Scholarship Information" />
+            <div className="grid grid-cols-1 gap-6">
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Scholarship Name
+                </label>
+                <input
+                  type="text"
+                  name="scholarshipName"
+                  placeholder="e.g. Global Excellence Scholarship"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* University Details */}
+          <section>
+            <SectionHeader icon={FaUniversity} title="University Details" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  <span className="flex items-center gap-2">
+                    <FaUniversity className="text-gray-400" /> University Name
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="universityName"
+                  placeholder="e.g. Harvard University"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  <span className="flex items-center gap-2">
+                    <FaImage className="text-gray-400" /> University Image URL
+                  </span>
+                </label>
+                <input
+                  type="url"
+                  name="universityImage"
+                  placeholder="https://..."
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  <span className="flex items-center gap-2">
+                    <FaGlobe className="text-gray-400" /> Country
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="universityCountry"
+                  placeholder="e.g. USA"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  <span className="flex items-center gap-2">
+                    <FaMapMarkerAlt className="text-gray-400" /> City
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="universityCity"
+                  placeholder="e.g. Cambridge"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  <span className="flex items-center gap-2">
+                    <FaGraduationCap className="text-gray-400" /> World Rank
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  name="universityWorldRank"
+                  placeholder="e.g. 1"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Academic & Financial */}
+          <section>
+            <SectionHeader
+              icon={FaGraduationCap}
+              title="Academic & Financial"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Subject Category
+                </label>
+                <select
+                  name="subjectCategory"
+                  className="select select-bordered focus:select-primary h-12"
+                  required
+                >
+                  <option disabled selected>
+                    Select Subject
+                  </option>
+                  <option value="Agriculture">Agriculture</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Doctor">Doctor</option>
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Scholarship Category
+                </label>
+                <select
+                  name="scholarshipCategory"
+                  className="select select-bordered focus:select-primary h-12"
+                  required
+                >
+                  <option disabled selected>
+                    Select Category
+                  </option>
+                  <option value="Full Fund">Full Fund</option>
+                  <option value="Partial">Partial</option>
+                  <option value="Self-fund">Self-fund</option>
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Degree
+                </label>
+                <select
+                  name="degree"
+                  className="select select-bordered focus:select-primary h-12"
+                  required
+                >
+                  <option disabled selected>
+                    Select Degree
+                  </option>
+                  <option value="Diploma">Diploma</option>
+                  <option value="Bachelor">Bachelor</option>
+                  <option value="Masters">Masters</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  <span className="flex items-center gap-2">
+                    <FaMoneyBillWave className="text-gray-400" /> Tuition Fees
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  name="tuitionFees"
+                  placeholder="Optional"
+                  className="input input-bordered focus:input-primary h-12"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Application Fees
+                </label>
+                <input
+                  type="number"
+                  name="applicationFees"
+                  placeholder="e.g. 50"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Service Charge
+                </label>
+                <input
+                  type="number"
+                  name="serviceCharge"
+                  placeholder="e.g. 10"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Dates */}
+          <section>
+            <SectionHeader icon={FaCalendarAlt} title="Deadlines" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label font-medium text-gray-700">
+                  Application Deadline
+                </label>
+                <input
+                  type="date"
+                  name="applicationDeadline"
+                  className="input input-bordered focus:input-primary h-12"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4 pt-4 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => navigate("/dashboard/manage-scholarships")}
+              className="btn btn-ghost"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className={`btn btn-primary px-8 ${loading ? "loading" : ""}`}
+              disabled={loading}
+            >
+              {loading ? "Publishing..." : "Add Scholarship"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

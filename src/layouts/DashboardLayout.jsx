@@ -21,6 +21,7 @@ import {
   FaSignOutAlt,
   FaBell,
   FaBars,
+  FaHeart,
 } from "react-icons/fa";
 
 const DashboardLayout = () => {
@@ -96,6 +97,9 @@ const DashboardLayout = () => {
             </NavLinkItem>
             <NavLinkItem to="/dashboard/my-reviews" icon={FaStar}>
               My Reviews
+            </NavLinkItem>
+            <NavLinkItem to="/dashboard/my-wishlist" icon={FaHeart}>
+              My Wishlist
             </NavLinkItem>
             <NavLinkItem to="/scholarships" icon={FaGraduationCap}>
               All Scholarships
@@ -224,17 +228,52 @@ const DashboardLayout = () => {
                 <FaBell className="text-xl text-gray-600" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <div className="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-4 border-l border-gray-200">
-                <img
-                  src={user?.photoURL || "https://via.placeholder.com/40"}
-                  alt={user?.displayName || "User"}
-                  className="w-8 h-8 lg:w-10 lg:h-10 rounded-full ring-2 ring-blue-500"
-                />
-                <div className="hidden sm:block">
-                  <p className="text-sm font-semibold text-gray-700">
-                    {user?.displayName || "User"}
-                  </p>
-                  <p className="text-xs text-gray-500 capitalize">{role}</p>
+              <div className="relative group">
+                <button className="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-4 border-l border-gray-200 focus:outline-none">
+                  <img
+                    src={user?.photoURL || "https://via.placeholder.com/40"}
+                    alt={user?.displayName || "User"}
+                    className="w-8 h-8 lg:w-10 lg:h-10 rounded-full ring-2 ring-blue-500 object-cover"
+                  />
+                  <div className="hidden sm:block text-left">
+                    <p className="text-sm font-semibold text-gray-700">
+                      {user?.displayName || "User"}
+                    </p>
+                    <p className="text-xs text-gray-500 capitalize">{role}</p>
+                  </div>
+                </button>
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 border border-gray-100 z-50">
+                  <div className="px-4 py-2 border-b border-gray-100 sm:hidden">
+                    <p className="text-sm font-semibold text-gray-800 truncate">
+                      {user?.displayName || "User"}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate capitalize">
+                      {role}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                  <NavLink
+                    to="/"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                  >
+                    Home
+                  </NavLink>
+                  <NavLink
+                    to="/dashboard/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                  >
+                    My Profile
+                  </NavLink>
+                  <button
+                    onClick={logout}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                  >
+                    Logout
+                  </button>
                 </div>
               </div>
             </div>

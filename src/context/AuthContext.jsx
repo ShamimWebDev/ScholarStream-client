@@ -89,24 +89,14 @@ const AuthProvider = ({ children }) => {
     axios
       .get(`/users/${email}`)
       .then((userRes) => {
-        console.log("🔍 AuthContext - MongoDB user data:", userRes.data);
-
         // Merge Firebase user with database user (includes role and _id)
         setUser((prev) => {
           const merged = { ...prev, ...userRes.data };
-          console.log("✅ AuthContext - Merged user:", {
-            email: merged.email,
-            _id: merged._id,
-            role: merged.role,
-            displayName: merged.displayName || merged.name,
-          });
           return merged;
         });
         setLoading(false);
       })
       .catch((err) => {
-        console.error("❌ User fetch failed", err);
-        console.error("❌ User might not exist in MongoDB for:", email);
         setLoading(false);
       });
   };

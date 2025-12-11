@@ -11,38 +11,81 @@ const ScholarshipDetails = () => {
   const [loading, setLoading] = useState(true);
   const [hasApplied, setHasApplied] = useState(false);
   const [existingApp, setExistingApp] = useState(null);
+  const [relatedScholarships, setRelatedScholarships] = useState([]);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
+        // 1. Core Scholarship Data
         const scholarshipRes = await axios.get(`/scholarships/${id}`);
         setScholarship(scholarshipRes.data);
+        const currentCategory = scholarshipRes.data.scholarshipCategory;
 
-        // Fetch reviews roughly concurrently or after
-        const reviewsRes = await axios.get(`/reviews/scholarship/${id}`);
-        setReviews(reviewsRes.data);
+        // 2. Reviews (Non-critical)
+        try {
+          const reviewsRes = await axios.get(`/reviews/scholarship/${id}`);
+          setReviews(reviewsRes.data);
+        } catch (err) {
+          console.error("Failed to load reviews:", err);
+          setReviews([]);
+        }
 
-        // Check if user has already applied for this scholarship
+        // 3. User Data (Application & Wishlist)
         if (user?.email) {
-          const appsRes = await axios.get(`/applications/user/${user.email}`);
-          const existingApplication = appsRes.data.find(
-            (app) => app.scholarshipId === id
-          );
-          if (existingApplication) {
-            setHasApplied(true);
-            setExistingApp(existingApplication);
+          try {
+            const appsRes = await axios.get(`/applications/user/${user.email}`);
+            const existingApplication = appsRes.data.find(
+              (app) => app.scholarshipId === id
+            );
+            if (existingApplication) {
+              setHasApplied(true);
+              setExistingApp(existingApplication);
+            }
+
+            // Allow failing silently if wishlist check fails
+            try {
+              const wishlistRes = await axios.get(
+                `/users/wishlist/${user.email}`
+              );
+              const foundInWishlist = wishlistRes.data.some(
+                (w) => w._id === id
+              );
+              setIsInWishlist(foundInWishlist);
+            } catch (e) {
+              console.warn("Wishlist check failed", e);
+            }
+          } catch (err) {
+            console.error("Failed to load user data:", err);
           }
+        }
+
+        // 4. Related Scholarships (Non-critical)
+        try {
+          const allScholarshipsRes = await axios.get("/scholarships/all");
+          const allItems = allScholarshipsRes.data.scholarships || [];
+          const related = allItems
+            .filter(
+              (item) =>
+                item.scholarshipCategory === currentCategory && item._id !== id
+            )
+            .slice(0, 3);
+          setRelatedScholarships(related);
+        } catch (err) {
+          console.error("Failed to load related scholarships:", err);
+          setRelatedScholarships([]);
         }
 
         setLoading(false);
       } catch (error) {
-        console.error(error);
+        console.error("Critical error loading scholarship:", error);
+        setScholarship(null);
         setLoading(false);
       }
     };
     fetchDetails();
-  }, [id]);
+  }, [id, user?.email]);
 
   if (loading)
     return (
@@ -73,6 +116,32 @@ const ScholarshipDetails = () => {
     universityWorldRank,
     subjectCategory,
   } = scholarship;
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      // Prompt logic or redirect to login could go here
+      alert("Please login to save to wishlist!");
+      return;
+    }
+
+    try {
+      if (isInWishlist) {
+        await axios.put("/users/wishlist/remove", {
+          email: user.email,
+          scholarshipId: id,
+        });
+        setIsInWishlist(false);
+      } else {
+        await axios.put("/users/wishlist/add", {
+          email: user.email,
+          scholarshipId: id,
+        });
+        setIsInWishlist(true);
+      }
+    } catch (err) {
+      console.error("Failed to toggle wishlist", err);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -115,7 +184,7 @@ const ScholarshipDetails = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-4 mt-6 items-center">
             {hasApplied ? (
               <div className="w-full">
                 <div className="alert alert-info">
@@ -161,6 +230,30 @@ const ScholarshipDetails = () => {
                 Apply for Scholarship
               </Link>
             )}
+
+            {/* Wishlist Button */}
+            <button
+              onClick={handleWishlistToggle}
+              className={`btn btn-circle btn-lg ${
+                isInWishlist ? "btn-error text-white" : "btn-outline btn-error"
+              }`}
+              title={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8"
+                fill={isInWishlist ? "currentColor" : "none"}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -241,6 +334,59 @@ const ScholarshipDetails = () => {
                     ))}
                   </div>
                   <p className="italic">"{review.reviewComment}"</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Related Scholarships Section */}
+      <div className="mt-16 border-t border-gray-200 pt-10">
+        <h3 className="text-2xl font-bold mb-6">You may also like</h3>
+        {relatedScholarships.length === 0 ? (
+          <p className="text-gray-500">No related scholarships found.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedScholarships.map((item) => (
+              <div
+                key={item._id}
+                className="card bg-base-100 shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300"
+              >
+                <figure className="h-48 relative overflow-hidden">
+                  <img
+                    src={item.universityImage}
+                    alt={item.universityName}
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  />
+                  <div className="absolute top-2 right-2 badge badge-secondary">
+                    {item.scholarshipCategory}
+                  </div>
+                </figure>
+                <div className="card-body">
+                  <h2 className="card-title text-lg">
+                    {item.universityName}
+                    <div className="badge badge-outline text-xs">
+                      {item.universityCountry}
+                    </div>
+                  </h2>
+                  <p className="text-sm font-semibold truncate">
+                    {item.scholarshipName}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Subject: {item.subjectCategory}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Deadline:{" "}
+                    {new Date(item.applicationDeadline).toLocaleDateString()}
+                  </p>
+                  <div className="card-actions justify-end mt-4">
+                    <Link
+                      to={`/scholarship/${item._id}`}
+                      className="btn btn-sm btn-primary"
+                    >
+                      View Details
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}

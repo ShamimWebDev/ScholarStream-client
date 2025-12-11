@@ -49,17 +49,6 @@ const CheckoutForm = ({ scholarship }) => {
     }
   }, [applicationFees]);
 
-  // Debug: Log user data when component mounts or user changes
-  useEffect(() => {
-    console.log("🔍 CheckoutForm - User data:", {
-      hasId: !!user?._id,
-      userId: user?._id,
-      email: user?.email,
-      name: user?.displayName,
-      fullUser: user,
-    });
-  }, [user]);
-
   /**
    * Handle payment form submission
    * Processes card payment and creates application record on success
@@ -128,7 +117,7 @@ const CheckoutForm = ({ scholarship }) => {
         await axios.post("/applications", failedApplication);
         navigate("/payment-failed");
       } catch (err) {
-        console.error("Failed to save application:", err);
+        // console.error("Failed to save application:", err);
       }
     } else {
       if (paymentIntent.status === "succeeded") {
@@ -145,11 +134,6 @@ const CheckoutForm = ({ scholarship }) => {
 
           if (existingApp) {
             // Update existing unpaid application
-            console.log(
-              "📝 Updating existing unpaid application:",
-              existingApp._id
-            );
-
             const updateData = {
               paymentStatus: "paid",
               applicationDate: new Date(), // Update to current date
@@ -159,7 +143,6 @@ const CheckoutForm = ({ scholarship }) => {
               `/applications/${existingApp._id}`,
               updateData
             );
-            console.log("✅ Application updated successfully:", res.data);
 
             navigate("/payment-success", {
               state: {
@@ -188,9 +171,7 @@ const CheckoutForm = ({ scholarship }) => {
               applicationStatus: "pending",
             };
 
-            console.log("📤 Creating new application:", application);
             const res = await axios.post("/applications", application);
-            console.log("✅ Application saved successfully:", res.data);
 
             if (res.data._id || res.data.insertedId) {
               navigate("/payment-success", {
@@ -204,11 +185,6 @@ const CheckoutForm = ({ scholarship }) => {
             }
           }
         } catch (err) {
-          console.error("❌ Failed to save application:", err);
-          console.error("❌ Error response data:", err.response?.data);
-          console.error("❌ Error status:", err.response?.status);
-          console.error("❌ Error message:", err.message);
-
           const errorMessage =
             err.response?.data?.message ||
             err.response?.data?.error ||

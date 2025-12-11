@@ -45,41 +45,43 @@ const TopScholarships = () => {
   };
 
   return (
-    <div className="my-16 px-4">
-      <motion.h2
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-3xl font-bold text-center mb-8"
-      >
-        Top Scholarships
-      </motion.h2>
-      <motion.div
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
-      >
-        {scholarships.map((scholarship) => (
-          <motion.div key={scholarship._id} variants={item}>
-            <ScholarshipCard scholarship={scholarship} />
-          </motion.div>
-        ))}
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.5 }}
-        className="text-center mt-8"
-      >
-        <Link to="/scholarships" className="btn btn-outline btn-primary">
-          View All Scholarships
-        </Link>
-      </motion.div>
-    </div>
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-3xl font-bold text-center mb-8"
+        >
+          Top Scholarships
+        </motion.h2>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+        >
+          {scholarships.map((scholarship) => (
+            <motion.div key={scholarship._id} variants={item}>
+              <ScholarshipCard scholarship={scholarship} />
+            </motion.div>
+          ))}
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="text-center mt-12"
+        >
+          <Link to="/scholarships" className="btn btn-outline btn-primary px-8">
+            View All Scholarships
+          </Link>
+        </motion.div>
+      </div>
+    </section>
   );
 };
 
