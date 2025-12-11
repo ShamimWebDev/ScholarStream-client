@@ -2,9 +2,14 @@
 
 ScholarStream is a comprehensive web application designed to bridge the gap between students seeking financial aid and scholarship providers. It simplifies the scholarship application process, making it transparent, efficient, and accessible for everyone.
 
+- **Live Site Link**: [ScholarStream](https://scholar-stream-client.web.app/)
+- **Github Repository (Client)**: [ScholarStream-client](https://github.com/ShamimWebDev/ScholarStream-client)
+- **Github Repository (Server)**: [ScholarStream-server](https://github.com/ShamimWebDev/ScholarStream-server)
+
 ## 🌟 Key Features
 
 ### 👨‍🎓 For Students
+
 - **Smart Search**: Find scholarships tailored to your academic profile.
 - **Easy Application**: Apply to multiple scholarships with a few clicks.
 - **Dashboard**: Track application status (Pending, Processing, Completed) in real-time.
@@ -12,11 +17,13 @@ ScholarStream is a comprehensive web application designed to bridge the gap betw
 - **Secure Payments**: Integrated Stripe payment gateway for application fees.
 
 ### 🛡️ For Moderators
+
 - **Application Management**: Review, approve, or reject scholarship applications.
 - **Feedback System**: Provide detailed feedback on rejected applications.
 - **Review Moderation**: Monitor and manage user reviews to ensure community guidelines.
 
 ### 👑 For Admins
+
 - **User Management**: Manage user roles (Student, Moderator, Admin).
 - **Analytics**: Gain insights into platform usage and application trends.
 - **System Control**: Oversee the entire platform's operation.
@@ -24,6 +31,7 @@ ScholarStream is a comprehensive web application designed to bridge the gap betw
 ## 🚀 Technologies Used
 
 ### Frontend
+
 - **React.js**: Component-based UI library.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **DaisyUI**: Component library for Tailwind CSS.
@@ -34,6 +42,7 @@ ScholarStream is a comprehensive web application designed to bridge the gap betw
 - **Firebase Auth**: Secure user authentication.
 
 ### Backend
+
 - **Node.js**: JavaScript runtime environment.
 - **Express.js**: Web application framework.
 - **MongoDB**: NoSQL database for flexible data storage.
@@ -44,23 +53,28 @@ ScholarStream is a comprehensive web application designed to bridge the gap betw
 Follow these steps to set up the project locally.
 
 ### Prerequisites
+
 - Node.js (v14 or higher)
 - MongoDB (Local or Atlas connection string)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/scholarstream.git
 cd scholarstream
 ```
 
 ### 2. Frontend Setup
+
 Navigate to the frontend directory:
+
 ```bash
 cd frontend
 npm install
 ```
 
 Create a `.env.local` file in the `frontend` directory:
+
 ```env
 VITE_API_URL=http://localhost:5000
 VITE_FIREBASE_API_KEY=your_firebase_api_key
@@ -73,18 +87,22 @@ VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 ```
 
 Run the frontend:
+
 ```bash
 npm run dev
 ```
 
 ### 3. Backend Setup
+
 Navigate to the backend directory:
+
 ```bash
 cd backend
 npm install
 ```
 
 Create a `.env` file in the `backend` directory:
+
 ```env
 PORT=5000
 DB_USER=your_db_user
@@ -93,10 +111,18 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 ACCESS_TOKEN_SECRET=your_jwt_secret
 ```
 
-Run the backend:
-```bash
+Run the backend:```bash
 npm start
+
 ```
+
+## 💳 Payment Testing Credential (Stripe Test Mode)
+To test the payment gateway functionality, usage the following test card credentials:
+
+| Card Number | Expiry Date | CVC | ZIP/Postal Code |
+| :--- | :--- | :--- | :--- |
+| **4242 4242 4242 4242** | Any future date (e.g., 12/30) | Any 3 digits (e.g., 123) | Any valid ZIP (e.g., 12345) |
 
 ## 📄 License
 This project is licensed under the MIT License.
+```
