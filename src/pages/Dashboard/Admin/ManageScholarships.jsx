@@ -7,7 +7,7 @@ const ManageScholarships = () => {
 
   const fetchScholarships = () => {
     axios
-      .get("/scholarships/all")
+      .get("/scholarships/all?limit=1000") // Set high limit for admin view
       .then((res) => setScholarships(res.data.scholarships))
       .catch((err) => console.error(err));
   };
