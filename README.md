@@ -2,7 +2,7 @@
 
 ScholarStream is a comprehensive web application designed to bridge the gap between students seeking financial aid and scholarship providers. It simplifies the scholarship application process, making it transparent, efficient, and accessible for everyone.
 
-- **Live Site Link**: [ScholarStream](https://scholar-stream-client.web.app/)
+- **Live Site Link**: [ScholarStream](https://scholar-stream-client.vercel.app/)
 - **Github Repository (Client)**: [ScholarStream-client](https://github.com/ShamimWebDev/ScholarStream-client)
 - **Github Repository (Server)**: [ScholarStream-server](https://github.com/ShamimWebDev/ScholarStream-server)
 
