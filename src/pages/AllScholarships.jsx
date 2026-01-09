@@ -81,6 +81,7 @@ const AllScholarships = () => {
   // Fetch all reviews to display on cards
   useEffect(() => {
     axios
+      .get("/reviews")
       .then((res) => setAllReviews(res.data))
       .catch((err) => {
         // If public endpoint doesn't exist, fetch individually (fallback)
