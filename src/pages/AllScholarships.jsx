@@ -316,7 +316,7 @@ const AllScholarships = () => {
           </div>
         </>
       ) : (
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-md p-16 text-center">
+        <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-2xl shadow-md p-16 text-center">
           <div className="text-7xl mb-6 text-purple-500">
             <FaSearch className="mx-auto" />
           </div>

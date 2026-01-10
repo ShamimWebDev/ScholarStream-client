@@ -12,10 +12,10 @@ const PaymentFailed = () => {
     location.state || {};
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-50 to-orange-50 px-4 py-8">
       <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-8">
         {/* Error Icon */}
-        <div className="w-24 h-24 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-24 h-24 bg-linear-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
           <FaTimesCircle className="w-16 h-16 text-white" />
         </div>
 
@@ -30,7 +30,7 @@ const PaymentFailed = () => {
 
         {/* Scholarship Details (if available) */}
         {(scholarshipName || universityName) && (
-          <div className="bg-gradient-to-r from-gray-50 to-orange-50 rounded-2xl p-6 mb-6 border border-gray-200">
+          <div className="bg-linear-to-r from-gray-50 to-orange-50 rounded-2xl p-6 mb-6 border border-gray-200">
             <h3 className="font-bold text-gray-800 mb-4 text-xl flex items-center gap-2">
               <FaGraduationCap className="text-orange-600" />
               Scholarship Details

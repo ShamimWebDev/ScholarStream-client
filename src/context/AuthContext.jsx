@@ -108,7 +108,6 @@ const AuthProvider = ({ children }) => {
    */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("🔍 AuthContext - Firebase user:", currentUser?.email);
       setUser(currentUser);
 
       if (currentUser) {
@@ -118,7 +117,6 @@ const AuthProvider = ({ children }) => {
           .post("/jwt", userInfo)
           .then((res) => {
             if (res.data.token) {
-              console.log("✅ JWT token obtained");
               localStorage.setItem("token", res.data.token);
               fetchUserData(currentUser.email);
             }

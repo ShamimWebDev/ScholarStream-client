@@ -14,10 +14,10 @@ const PaymentSuccess = () => {
     location.state || {};
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-blue-50 px-4 py-8">
       <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-8">
         {/* Success Icon */}
-        <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+        <div className="w-24 h-24 bg-linear-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
           <FaCheckCircle className="w-16 h-16 text-white" />
         </div>
 
@@ -31,7 +31,7 @@ const PaymentSuccess = () => {
 
         {/* Transaction Details */}
         {transactionId && (
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-200">
+          <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-200">
             <p className="text-sm text-gray-600 mb-1">Transaction ID</p>
             <p className="font-mono text-sm font-semibold text-blue-600 break-all">
               {transactionId}
@@ -40,7 +40,7 @@ const PaymentSuccess = () => {
         )}
 
         {/* Scholarship Details Card */}
-        <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 mb-6 border border-gray-200">
+        <div className="bg-linear-to-r from-gray-50 to-blue-50 rounded-2xl p-6 mb-6 border border-gray-200">
           <h3 className="font-bold text-gray-800 mb-4 text-xl flex items-center gap-2">
             <FaGraduationCap className="text-blue-600" />
             Scholarship Details

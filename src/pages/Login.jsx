@@ -50,7 +50,6 @@ const Login = () => {
           role: "student",
         };
         axios.post("/users", userInfo).then((res) => {
-          console.log(res.data);
           // Manually fetch user data to ensure role is present
           fetchUserData(user.email);
           toast.success("Welcome back, " + user.displayName + "!");
