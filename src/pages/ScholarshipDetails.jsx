@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const ScholarshipDetails = () => {
   const { id } = useParams();
@@ -119,8 +120,7 @@ const ScholarshipDetails = () => {
 
   const handleWishlistToggle = async () => {
     if (!user) {
-      // Prompt logic or redirect to login could go here
-      alert("Please login to save to wishlist!");
+      toast.error("Please login to save to wishlist!");
       return;
     }
 
@@ -131,15 +131,18 @@ const ScholarshipDetails = () => {
           scholarshipId: id,
         });
         setIsInWishlist(false);
+        toast.success("Removed from wishlist");
       } else {
         await axios.put("/users/wishlist/add", {
           email: user.email,
           scholarshipId: id,
         });
         setIsInWishlist(true);
+        toast.success("Added to wishlist!");
       }
     } catch (err) {
       console.error("Failed to toggle wishlist", err);
+      toast.error("Failed to update wishlist");
     }
   };
 
@@ -225,7 +228,7 @@ const ScholarshipDetails = () => {
             ) : (
               <Link
                 to={`/checkout/${id}`}
-                className="btn btn-primary btn-lg flex-grow"
+                className="btn btn-primary btn-lg grow"
               >
                 Apply for Scholarship
               </Link>

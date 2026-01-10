@@ -1,2 +1,29 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin "daisyui";
+
+@theme {
+  /* DaisyUI theme configuration */
+  --daisyui-themes: light, dark;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Preserve specific transitions that shouldn't be affected */
+.btn,
+button,
+input,
+select,
+textarea {
+  transition-property: background-color, border-color, color, transform,
+    box-shadow;
+}
+
+/* Dark mode scrollbar styling */
+.dark {
+  color-scheme: dark;
+}

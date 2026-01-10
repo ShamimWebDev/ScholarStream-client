@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { BsArrowRight } from "react-icons/bs";
 
 const Contributors = () => {
@@ -17,7 +18,7 @@ const Contributors = () => {
     },
     {
       name: "Oxford University",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Arms_fo_the_University_of_Oxford.svg/1200px-Arms_fo_the_University_of_Oxford.svg.png",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg",
     },
   ];
 
@@ -34,10 +35,13 @@ const Contributors = () => {
               We collaborate with world-renowned universities and organizations
               to bring you the best scholarship opportunities.
             </p>
-            <button className="btn btn-outline btn-primary rounded-full group">
+            <Link
+              to="/contact"
+              className="btn btn-outline btn-primary rounded-full group"
+            >
               Become a Partner{" "}
               <BsArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
 
           <div className="md:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60 grayscale hover:grayscale-0 transition-all duration-500">

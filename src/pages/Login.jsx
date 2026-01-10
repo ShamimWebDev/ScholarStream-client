@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Login = () => {
   // We need fetchUserData from context
@@ -10,9 +11,17 @@ const Login = () => {
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
   const from = location.state?.from?.pathname || "/";
+
+  // Demo credentials handler - fills form fields only
+  const handleDemoLogin = (demoEmail, demoPassword) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setError("");
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -21,10 +30,12 @@ const Login = () => {
 
     signIn(email, password)
       .then(() => {
+        toast.success("Welcome back!");
         navigate(from, { replace: true });
       })
       .catch((err) => {
         setError(err.message);
+        toast.error("Login failed: " + err.message);
       });
   };
 
@@ -42,23 +53,27 @@ const Login = () => {
           console.log(res.data);
           // Manually fetch user data to ensure role is present
           fetchUserData(user.email);
+          toast.success("Welcome back, " + user.displayName + "!");
           navigate(from, { replace: true });
         });
       })
       .catch((err) => {
         setError(err.message);
+        toast.error("Google Sign-In failed: " + err.message);
       });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 px-4 py-12">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl transition-colors duration-300">
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
             Welcome Back
           </h2>
-          <p className="text-gray-600">Sign in to continue to ScholarStream</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Sign in to continue to ScholarStream
+          </p>
         </div>
 
         {/* Error */}
@@ -73,12 +88,16 @@ const Login = () => {
           {/* Email */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Email</span>
+              <span className="label-text font-medium dark:text-gray-300">
+                Email
+              </span>
             </label>
             <input
               type="email"
               name="email"
-              className="input input-bordered w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
               placeholder="your.email@example.com"
               required
             />
@@ -87,7 +106,9 @@ const Login = () => {
           {/* Password */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Password</span>
+              <span className="label-text font-medium dark:text-gray-300">
+                Password
+              </span>
             </label>
             <div className="relative">
               <input
@@ -97,14 +118,14 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
-                className="input input-bordered w-full pr-12"
+                className="input input-bordered w-full pr-12 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
               />
 
               {/* Eye icon always visible */}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 z-10"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 z-10"
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </button>
@@ -117,13 +138,54 @@ const Login = () => {
           </button>
         </form>
 
+        {/* Demo Credentials */}
+        <div className="mt-6">
+          <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-3 font-medium">
+            Quick Demo Login
+          </p>
+          <div className="space-y-2">
+            {/* Admin Demo Button */}
+            <button
+              type="button"
+              onClick={() =>
+                handleDemoLogin("admin1@gmail.com", "admin1@gmail.comA")
+              }
+              className="btn btn-sm w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white border-none"
+            >
+              Admin Demo
+            </button>
+
+            {/* Moderator Demo Button */}
+            <button
+              type="button"
+              onClick={() =>
+                handleDemoLogin("moderator@gmail.com", "Moderator@123")
+              }
+              className="btn btn-sm w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white border-none"
+            >
+              Moderator Demo
+            </button>
+
+            {/* Student Demo Button */}
+            <button
+              type="button"
+              onClick={() =>
+                handleDemoLogin("student10@gmail.com", "student10@gmail.comA")
+              }
+              className="btn btn-sm w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white border-none"
+            >
+              Student Demo
+            </button>
+          </div>
+        </div>
+
         {/* Divider */}
-        <div className="divider">OR</div>
+        <div className="divider dark:text-gray-500">OR</div>
 
         {/* Google Login */}
         <button
           onClick={handleGoogleSignIn}
-          className="btn btn-outline w-full flex items-center justify-center gap-2"
+          className="btn btn-outline w-full flex items-center justify-center gap-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:border-gray-500"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
@@ -146,11 +208,11 @@ const Login = () => {
           Continue with Google
         </button>
 
-        <p className="text-center text-gray-600 mt-6">
+        <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
           Don't have an account?{" "}
           <Link
             to="/register"
-            className="text-purple-600 font-semibold hover:underline"
+            className="text-purple-600 dark:text-purple-400 font-semibold hover:underline"
           >
             Sign up
           </Link>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "../api/axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const { createUser, updateUserProfile, googleSignIn, fetchUserData } =
@@ -23,14 +24,17 @@ const Register = () => {
     // Password validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
+      toast.error("Password must be at least 6 characters long");
       return;
     }
     if (!/[A-Z]/.test(password)) {
       setError("Password must contain at least one uppercase letter");
+      toast.error("Password must contain at least one uppercase letter");
       return;
     }
     if (!/[!@#$%^&*]/.test(password)) {
       setError("Password must contain at least one special character");
+      toast.error("Password must contain at least one special character");
       return;
     }
 
@@ -48,13 +52,18 @@ const Register = () => {
             .post("/users", userInfo)
             .then(() => {
               fetchUserData(email);
+              toast.success("Account created successfully!");
               navigate("/");
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+              console.error(err);
+              toast.error("Failed to save user data.");
+            });
         });
       })
       .catch((err) => {
         setError(err.message);
+        toast.error("Registration failed: " + err.message);
       });
   };
 
@@ -72,17 +81,19 @@ const Register = () => {
           .post("/users", userInfo)
           .then(() => {
             fetchUserData(user.email);
+            toast.success("Welcome, " + user.displayName + "!");
             navigate("/");
           })
           .catch((err) => console.error(err));
       })
       .catch((err) => {
         setError(err.message);
+        toast.error("Google Sign-In failed: " + err.message);
       });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">

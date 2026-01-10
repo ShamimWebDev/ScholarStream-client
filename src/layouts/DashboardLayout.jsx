@@ -4,7 +4,7 @@
  */
 
 import React, { useContext, useState } from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import {
   FaTachometerAlt,
@@ -26,7 +26,9 @@ import {
 
 const DashboardLayout = () => {
   const { user, logout } = useContext(AuthContext);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const role = user?.role || "student";
 
@@ -38,8 +40,8 @@ const DashboardLayout = () => {
       className={({ isActive }) =>
         `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
           isActive
-            ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-            : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+            ? "bg-linear-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+            : "text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400"
         }`
       }
     >
@@ -51,16 +53,19 @@ const DashboardLayout = () => {
   const SidebarContent = () => (
     <>
       {/* Sidebar Header */}
-      <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+      <div className="p-6 bg-linear-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 text-white">
+        <Link
+          to="/"
+          className="flex items-center gap-3 mb-4 hover:opacity-90 transition-opacity"
+        >
+          <div className="w-10 h-10 bg-white dark:bg-gray-100 rounded-lg flex items-center justify-center">
             <FaGraduationCap className="text-2xl text-blue-600" />
           </div>
           <div>
             <h2 className="text-xl font-bold">ScholarStream</h2>
             <p className="text-xs text-blue-100">Education Portal</p>
           </div>
-        </div>
+        </Link>
 
         {/* User Profile Card */}
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 mt-4">
@@ -81,7 +86,7 @@ const DashboardLayout = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="px-4 py-6 space-y-2">
+      <nav className="px-4 py-6 space-y-2 bg-white dark:bg-gray-900 transition-colors duration-300">
         <NavLinkItem to="/dashboard" icon={FaTachometerAlt} end>
           Dashboard
         </NavLinkItem>
@@ -89,7 +94,7 @@ const DashboardLayout = () => {
         {/* Student Links */}
         {role === "student" && (
           <>
-            <div className="px-2 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider mt-4">
+            <div className="px-2 py-2 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-4">
               Student
             </div>
             <NavLinkItem to="/dashboard/my-applications" icon={FaFileAlt}>
@@ -110,7 +115,7 @@ const DashboardLayout = () => {
         {/* Moderator Links */}
         {role === "moderator" && (
           <>
-            <div className="px-2 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider mt-4">
+            <div className="px-2 py-2 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-4">
               Moderator
             </div>
             <NavLinkItem
@@ -128,7 +133,7 @@ const DashboardLayout = () => {
         {/* Admin Links */}
         {role === "admin" && (
           <>
-            <div className="px-2 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider mt-4">
+            <div className="px-2 py-2 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-4">
               Administration
             </div>
             <NavLinkItem to="/dashboard/add-scholarship" icon={FaPlus}>
@@ -156,7 +161,7 @@ const DashboardLayout = () => {
         )}
 
         {/* Common Links */}
-        <div className="border-t border-gray-200 mt-6 pt-4 space-y-2">
+        <div className="border-t border-gray-200 dark:border-gray-800 mt-6 pt-4 space-y-2">
           <NavLinkItem to="/dashboard/profile" icon={FaUser}>
             My Profile
           </NavLinkItem>
@@ -168,7 +173,7 @@ const DashboardLayout = () => {
               logout();
               setIsSidebarOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
           >
             <FaSignOutAlt className="text-lg" />
             <span className="font-medium">Logout</span>
@@ -179,9 +184,9 @@ const DashboardLayout = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-72 bg-white shadow-xl fixed h-full overflow-y-auto">
+      <aside className="hidden lg:block w-72 bg-white dark:bg-gray-900 shadow-xl fixed h-full overflow-y-auto border-r border-gray-100 dark:border-gray-800 transition-colors duration-300">
         <SidebarContent />
       </aside>
 
@@ -195,7 +200,7 @@ const DashboardLayout = () => {
           className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
-        <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-2xl overflow-y-auto">
+        <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-gray-900 shadow-2xl overflow-y-auto transition-colors duration-300">
           <SidebarContent />
         </aside>
       </div>
@@ -203,7 +208,7 @@ const DashboardLayout = () => {
       {/* Main Content */}
       <main className="flex-1 lg:ml-72">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 shadow-sm transition-colors duration-300">
           <div className="px-4 lg:px-8 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Mobile Menu Button */}
@@ -214,67 +219,87 @@ const DashboardLayout = () => {
                 <FaBars className="w-6 h-6 text-gray-600" />
               </button>
               <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                  <FaTachometerAlt className="text-blue-600" />
+                <h1 className="text-xl lg:text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                  <FaTachometerAlt className="text-blue-600 dark:text-blue-400" />
                   Dashboard
                 </h1>
-                <p className="text-xs lg:text-sm text-gray-500 hidden sm:block">
+                <p className="text-xs lg:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                   Welcome back! Here's what's happening.
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 lg:gap-4">
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative">
-                <FaBell className="text-xl text-gray-600" />
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors relative">
+                <FaBell className="text-xl text-gray-600 dark:text-gray-400" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <div className="relative group">
-                <button className="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-4 border-l border-gray-200 focus:outline-none">
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-4 border-l border-gray-200 dark:border-gray-700 focus:outline-none"
+                >
                   <img
                     src={user?.photoURL || "https://via.placeholder.com/40"}
                     alt={user?.displayName || "User"}
                     className="w-8 h-8 lg:w-10 lg:h-10 rounded-full ring-2 ring-blue-500 object-cover"
                   />
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-semibold text-gray-700">
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                       {user?.displayName || "User"}
                     </p>
-                    <p className="text-xs text-gray-500 capitalize">{role}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                      {role}
+                    </p>
                   </div>
                 </button>
 
-                {/* Dropdown Menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 border border-gray-100 z-50">
-                  <div className="px-4 py-2 border-b border-gray-100 sm:hidden">
-                    <p className="text-sm font-semibold text-gray-800 truncate">
-                      {user?.displayName || "User"}
-                    </p>
-                    <p className="text-xs text-gray-500 truncate capitalize">
-                      {role}
-                    </p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {user?.email}
-                    </p>
-                  </div>
-                  <NavLink
-                    to="/"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                  >
-                    Home
-                  </NavLink>
-                  <NavLink
-                    to="/dashboard/profile"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                  >
-                    My Profile
-                  </NavLink>
-                  <button
-                    onClick={logout}
-                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                  >
-                    Logout
-                  </button>
-                </div>
+                {/* Dropdown Menu & Backdrop */}
+                {isProfileOpen && (
+                  <>
+                    {/* Backdrop to close on click outside */}
+                    <div
+                      className="fixed inset-0 z-40 cursor-default"
+                      onClick={() => setIsProfileOpen(false)}
+                    ></div>
+                    {/* Menu */}
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 transition-all duration-200 border border-gray-100 dark:border-gray-700 z-50">
+                      <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700 sm:hidden">
+                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+                          {user?.displayName || "User"}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate capitalize">
+                          {role}
+                        </p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
+                          {user?.email}
+                        </p>
+                      </div>
+                      <NavLink
+                        to="/"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
+                      >
+                        Home
+                      </NavLink>
+                      <NavLink
+                        to="/dashboard/profile"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
+                      >
+                        My Profile
+                      </NavLink>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setIsProfileOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
